@@ -1,0 +1,31 @@
+Configuration:
+  Appenders:
+    Console:
+      name: "CONSOLE"
+      PatternLayout:
+        disableAnsi: false # 색상 변경 때 필요
+        pattern: "%style{[%d{yyyy-MM-dd HH:mm:ss.SSS}]}{bold} %highlight{[%t]}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_cyan, DEBUG=bright_green, TRACE=magenta} %highlight{[%-5level]}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_cyan, DEBUG=bright_green, TRACE=magenta} %style{[%c{1.}]}{bright_magenta} - %highlight{%m}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_cyan, DEBUG=bright_green, TRACE=magenta}%n"
+  Loggers:
+    Root:
+      level: "INFO"
+      AppenderRef:
+       - ref: "CONSOLE"
+    Logger:
+      - name: "com.portfolio"
+        level: "ALL"
+      - name: "org.apache.catalina.core"
+        level: "OFF"
+      - name: "org.apache.coyote.http11"
+        level: "OFF"
+      - name: "org.apache.tomcat.util.net"
+        level: "OFF"
+      - name: "org.apache.catalina.startup"
+        level: "OFF"
+      - name: "com.zaxxer.hikari"
+        level: "INFO"
+      - name: "org.apache.ibatis"
+        level: "DEBUG"
+      - name: "org.springframework.jdbc.core"
+        level: "DEBUG"
+      - name: "org.hibernate.orm.jdbc.bind"
+        level: "ALL"

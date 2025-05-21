@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.portfolio'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+}
+
+configurations {
+    configureEach {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+    implementation 'org.springframework.session:spring-session-core'
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    // https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-jpa
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.11'
+    // https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-apt
+    implementation 'io.github.openfeign.querydsl:querydsl-apt:6.11'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    runtimeOnly 'org.apache.logging.log4j:log4j-core'
+    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'
+    runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+//    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+

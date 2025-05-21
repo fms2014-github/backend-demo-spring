@@ -1,0 +1,40 @@
+### 그룹코드 추가
+// @no-log
+POST http://localhost:8080/api/insertGroupCode
+Content-Type: application/json
+
+{
+  "groupCode": 10015,
+  "name": "클럭 단위"
+}
+
+### 그룹 코드 수정
+// @no-log
+POST http://localhost:8080/api/updateGroupCode
+Content-Type: application/json
+
+{
+  "id": 10005,
+  "name": "AMD CPU 소켓"
+}
+
+### 그룹코드 조회
+// @no-log
+GET http://localhost:8080/api/selectGroupCode
+Content-Type: application/json
+
+### 코드 추가
+// @no-log
+POST http://localhost:8080/api/insertCode
+Content-Type: application/json
+
+{
+  "code": 111,
+  "groupCode": 10000,
+  "name": "ㅁㅁ2ㅁㅁ"
+}
+
+### 코드 조회
+// @no-log
+GET http://localhost:8080/api/selectCode
+Content-Type: application/json
