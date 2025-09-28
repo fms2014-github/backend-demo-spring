@@ -29,16 +29,18 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.slf4j:slf4j-api:2.0.17'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    // https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-jpa
-    implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.11'
-    // https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-apt
-    implementation 'io.github.openfeign.querydsl:querydsl-apt:6.11'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    implementation 'jakarta.servlet:jakarta.servlet-api'
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -47,15 +49,21 @@ dependencies {
     runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'
     runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'
     annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-//    testImplementation 'org.springframework.security:spring-security-test'
+    // testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-jpa
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.10.1'
+    // https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-apt
+    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:6.10.1:jakarta'
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
-
