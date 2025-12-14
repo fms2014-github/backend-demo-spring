@@ -2,6 +2,9 @@ spring:
   application:
     name: backend
 
+  config:
+    import: "classpath:configuration/etc/security-whitelist.yml"
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/fms2014
@@ -22,12 +25,18 @@ spring:
     prefix: "classpath:/templates/"
     suffix: .html
     view-names: thymeleaf/*
+    cache: false
   mvc:
     view:
       prefix: "/WEB-INF/views/"
       suffix: .jsp
   messages:
     encoding: "UTF-8"
+  servlet:
+    encoding:
+      charset: "UTF-8"
+      enabled: true
+      force: true
 
 logging:
   config: "classpath:configuration/log4j/log4j2.yaml"
@@ -38,15 +47,23 @@ mybatis:
   type-aliases-package: "com.portfolio.backend.dto"
   mapper-locations: "classpath*:mapper/*.xml"
 
-server:
-  servlet:
-    encoding:
-      charset: "UTF-8"
-      enabled: true
-      force: true
-
 management:
   endpoints:
     web:
       exposure:
         include: "env,health" # env 엔드포인트를 웹으로 노출
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: "/spring-boot/study"
+  swagger-ui:
+    path: "/swagger-ui.html"
+    # 정적 리소스 핸들러 경로에 맞춰 설정
+    # layout: BaseLayout
+    enabled: true
+    # 아래 부분이 핵심입니다. 커스텀 CSS와 JS를 주입합니다.
+    # 주의: addResourceHandlers에서 /swagger-custom/ 경로를 매핑해줘야 할 수도 있습니다.
+    # 기본 static 폴더에 있다면 바로 접근 가능합니다.
+    # tags-sorter: alpha
+    # operations-sorter: alpha

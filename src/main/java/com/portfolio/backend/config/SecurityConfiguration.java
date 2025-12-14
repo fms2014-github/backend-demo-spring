@@ -2,6 +2,7 @@ package com.portfolio.backend.config;
 
 import com.portfolio.backend.service.HttpFormLoginService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,21 +23,38 @@ import org.springframework.security.web.SecurityFilterChain;
 @Slf4j
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
+
+    private final SecurityProperties securityProperties;
 
     @Bean
     @Order(1)
     public SecurityFilterChain jwtFilterChange(HttpSecurity http) throws Exception {
         http.securityMatcher("/api/**")
-                .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/api/login").permitAll()
-                            .anyRequest().authenticated();
+            .cors(AbstractHttpConfigurer::disable)
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests((authorize) -> {
+                authorize.requestMatchers("/api/login", "/api/selectGroupCode").permitAll()
+                        .anyRequest().authenticated();
+            })
+            .sessionManagement((session) -> {
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            })
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> {
+                    // 로그인 페이지(HTML)로 보내는 대신 401 에러를 전송
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Unauthorized");
                 })
-                .sessionManagement((session) -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    // 권한 부족 시 403 에러 전송
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().write("Forbidden");
                 })
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable);
+            )
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
@@ -65,6 +83,7 @@ public class SecurityConfiguration {
                 })
                 .logout(logout -> {
                     logout.logoutUrl("/basic/logout")
+                            .logoutSuccessUrl("/basic/login")
                             .invalidateHttpSession(true)
                             .deleteCookies("JSESSIONID")
                             .logoutSuccessHandler((request, response, authException) -> {
@@ -80,11 +99,14 @@ public class SecurityConfiguration {
     @Bean
     @Order(3)
     public SecurityFilterChain httpFormFilterChange(HttpSecurity http) throws Exception {
+
+        String[] whitelistArray = securityProperties.getWhitelist().toArray(new String[0]);
+
         http.securityMatcher("/**")
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/login-page", "/login-process", "/login-failure").permitAll()
+                    authorize.requestMatchers(whitelistArray).permitAll()
                             .anyRequest().authenticated();
                 })
                 .userDetailsService(new HttpFormLoginService())

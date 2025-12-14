@@ -1,0 +1,12 @@
+security:
+  whitelist:
+    - "/login-page"
+    - "/login-process"
+    - "/login-failure"
+    - "/swagger-ui.html"
+    - "/css/**"
+    - "/swagger-ui/**"
+    - "/spring-boot/study/**"
+    - "/view-map"
+    - "/js/**"
+    - "/"

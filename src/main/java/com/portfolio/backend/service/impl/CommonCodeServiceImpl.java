@@ -70,7 +70,7 @@ public class CommonCodeServiceImpl implements CommonCodeService {
     @Override
     @Transactional
     public int updateGroupCode(CommonGroupCode commonGroupCode) {
-        CommonGroupCode selectGroupCode = commonGroupCodeRepository.findById(commonGroupCode.getGroupCode()).orElse(null);
+        CommonGroupCode selectGroupCode = commonGroupCodeRepository.findById(10000).orElse(null);
         log.info("##### selectGroupCode: {}", selectGroupCode);
         if(selectGroupCode != null) {
             selectGroupCode.setName(commonGroupCode.getName());
@@ -83,6 +83,7 @@ public class CommonCodeServiceImpl implements CommonCodeService {
     @Override
     public List<CommonGroupCode> selectGroupCode(SelectGroupCodeDto.Req req) {
 
+        log.debug(baseMapper.selectCommonCodeAll().toString());
         return commonGroupCodeRepository.findAll(CommonGroupCodeSpecs.isGroupCode(req));
     }
 
