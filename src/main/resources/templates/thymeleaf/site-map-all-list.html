@@ -16,6 +16,22 @@
             --table-border-color-hue: 0;
             --table-border-lightness: 89%;
         }
+
+        /* 드래그 방지 */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        h1, h2, h3, h4, h5, h6, a, p, table, th, td, span, li{
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
         body.dark-mode {
             --bg-lightness: 5%;
             --font-lightness: 95%;

@@ -1,4 +1,5 @@
 security:
+  keyFilePath: "src/main/resources/secret/key/db-key.key"
   whitelist:
     - "/login-page"
     - "/login-process"

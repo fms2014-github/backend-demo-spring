@@ -9,13 +9,14 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/fms2014
     username: root
-    password: "!rlatjrdyd8750"
+    password: "YlI1SG91SnB3UElCRjlaeG5xcndIQT09"
     hikari:
       maximum-pool-size: 30
       pool-name: "Hikari Connection Pool"  # Pool Name Alias
       minimum-idle: 10
       idle-timeout: 10000
       connection-timeout: 3000
+      auto-commit: false
   jpa:
     properties:
       hibernate:
@@ -59,11 +60,8 @@ springdoc:
     path: "/spring-boot/study"
   swagger-ui:
     path: "/swagger-ui.html"
-    # 정적 리소스 핸들러 경로에 맞춰 설정
-    # layout: BaseLayout
     enabled: true
-    # 아래 부분이 핵심입니다. 커스텀 CSS와 JS를 주입합니다.
-    # 주의: addResourceHandlers에서 /swagger-custom/ 경로를 매핑해줘야 할 수도 있습니다.
-    # 기본 static 폴더에 있다면 바로 접근 가능합니다.
-    # tags-sorter: alpha
-    # operations-sorter: alpha
+
+jwt:
+  secret: "v3rys3cr3tk3y_must_be_long_enough_for_security_standard_at_least_256_bits"
+  expiration: 3600000 # 1일

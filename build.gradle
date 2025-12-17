@@ -28,43 +28,98 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+// ----------------------------------------------------------------
+    // 1. Spring Boot Core & Web (웹 애플리케이션 기본 설정)
+    // ----------------------------------------------------------------
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator' // 애플리케이션 모니터링
+    implementation 'org.springframework.session:spring-session-core'       // 세션 관리
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor' // 설정 메타데이터 생성
+
+    // ----------------------------------------------------------------
+    // 2. Security & Auth (보안 및 인증)
+    // ----------------------------------------------------------------
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // JWT (JSON Web Token)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+    // ----------------------------------------------------------------
+    // 3. Database & ORM (데이터베이스 및 데이터 접근)
+    // ----------------------------------------------------------------
+    // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // MyBatis
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.0'
-    implementation 'org.springframework.session:spring-session-core'
-    implementation 'org.slf4j:slf4j-api:2.0.17'
-    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+
+    // QueryDSL (Jakarta 버전)
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.10.1'
+    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:6.10.1:jakarta'
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"       // QueryDSL 처리에 필요
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"     // QueryDSL 처리에 필요
+
+    // DB Drivers (MySQL / MariaDB)
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    // ----------------------------------------------------------------
+    // 4. View Template & JSP (화면 처리)
+    // ----------------------------------------------------------------
+    // Thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' // 타임리프 시큐리티 확장
+
+    // JSP & Servlet (JSP 사용 시 필요)
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
     implementation 'jakarta.servlet:jakarta.servlet-api'
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.mysql:mysql-connector-j'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    // ----------------------------------------------------------------
+    // 5. Logging (로깅 설정 - Log4j2)
+    // ----------------------------------------------------------------
+    // Spring Boot 기본 Logback 대신 Log4j2를 사용하는 설정으로 보입니다.
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.slf4j:slf4j-api:2.0.17'
     runtimeOnly 'org.apache.logging.log4j:log4j-core'
     runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'
-    runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'
+    runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0' // Log4j2 YAML 설정을 위해 필요
+
+    // ----------------------------------------------------------------
+    // 6. Documentation (API 문서화)
+    // ----------------------------------------------------------------
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0' // Swagger UI
+
+    // ----------------------------------------------------------------
+    // 7. Utilities & DevTools (개발 편의 도구)
+    // ----------------------------------------------------------------
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools' // 핫스왑 등 개발 편의
+
+    // ----------------------------------------------------------------
+    // 8. Testing (테스트)
+    // ----------------------------------------------------------------
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.0'
-    // testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    // https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-jpa
-    implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.10.1'
-    // https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-apt
-    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:6.10.1:jakarta'
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(JavaExec).configureEach {
+    systemProperty 'file.encoding', 'UTF-8'
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty 'file.encoding', 'UTF-8'
 }

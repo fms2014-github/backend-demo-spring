@@ -15,4 +15,5 @@ public class SecurityProperties {
 
     // YAML의 'whitelist' 키와 매핑됩니다.
     private List<String> whitelist;
+    private String keyFilePath;
 }

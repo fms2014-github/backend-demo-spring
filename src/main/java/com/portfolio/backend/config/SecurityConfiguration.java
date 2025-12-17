@@ -1,5 +1,6 @@
 package com.portfolio.backend.config;
 
+import com.portfolio.backend.security.filter.JwtAuthenticationFilter;
 import com.portfolio.backend.service.HttpFormLoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Slf4j
 @Configuration
@@ -27,6 +29,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     private final SecurityProperties securityProperties;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     @Order(1)
@@ -54,7 +58,8 @@ public class SecurityConfiguration {
                 })
             )
             .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable);
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);;
         return http.build();
     }
 
