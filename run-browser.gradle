@@ -1,0 +1,128 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.yaml:snakeyaml:2.0'
+    }
+}
+
+
+import java.awt.*
+
+def getPort() {
+    def yamlFile = file('src/main/resources/application.yml')
+    def properties = file('src/main/resources/application.properties')
+    if (!yamlFile.exists()) {
+
+
+        if(!yamlFile.exists()) {
+            println "❌ application.yml이나  파일을 찾을 수 없습니다."
+            return -1
+        }
+    }
+
+    try {
+        def lines = yamlFile.readLines()
+        def isServerBlock = false
+        def port = null
+
+        // 한 줄씩 읽으면서 'server'와 'port' 찾기
+        for (String line : lines) {
+            def cleanLine = line.trim()
+
+            // 주석(#) 무시
+            if (cleanLine.startsWith("#")) continue
+
+            // case 1: "server.port: 8080" 형태 (한 줄 작성)
+            if (cleanLine.startsWith("server.port:")) {
+                port = cleanLine.replace("server.port:", "").trim()
+                break
+            }
+
+            // case 2: "server:" 블록 시작 감지
+            if (cleanLine.startsWith("server:")) {
+                isServerBlock = true
+                continue
+            }
+
+            // "server:" 블록 내부에서 "port:" 발견 시
+            // (들여쓰기가 server보다 깊어야 하지만, 간단히 체크)
+            if (isServerBlock && cleanLine.startsWith("port:")) {
+                port = cleanLine.replace("port:", "").trim()
+                break
+            }
+
+            // 만약 들여쓰기가 없는 다른 키가 나오면 server 블록 끝남으로 간주 (단순화된 로직)
+            if (isServerBlock && !line.startsWith(" ") && !line.startsWith("\t") && !cleanLine.isEmpty()) {
+                isServerBlock = false
+            }
+        }
+
+        if (port && port.isInteger()) {
+            return port.toInteger()
+        }
+
+    } catch (Exception e) {
+        println "⚠️ [run-browser] 포트 파싱 중 오류(기본값 사용): ${e.message}"
+    }
+
+    return 8080 // 못 찾거나 에러나면 기본값
+}
+
+// 2. bootRun 태스크에 안전하게 접근하기 위해 tasks.named 사용
+tasks.named('bootRun') {
+    doFirst {
+        // 포트를 미리 가져옵니다 (스레드 밖에서 가져와서 로그 확인)
+        def port = getPort()
+        println "🔍 [run-browser] 감지된 서버 포트: ${port}"
+
+        Thread.start {
+            def url = "http://localhost:${port}"
+            def maxRetries = 100 // 50초 대기 (0.5초 * 100)
+            def isServerRunning = false
+
+            println "⏳ [run-browser] 서버가 ${port} 포트에서 뜨기를 기다리는 중..."
+
+            for (int i = 0; i < maxRetries; i++) {
+                try {
+                    new Socket("localhost", port as int).close()
+                    isServerRunning = true
+                    break
+                } catch (Exception e) {
+                    sleep(500)
+                }
+            }
+
+            if (isServerRunning) {
+                println "🚀 [run-browser] 서버 시작 감지! 브라우저를 엽니다: ${url}"
+                openUrl(url)
+            } else {
+                println "⚠️ [run-browser] 서버 시작 감지 실패 (타임아웃)"
+            }
+        }
+    }
+}
+
+def openUrl(String url) {
+    def os = System.getProperty("os.name").toLowerCase()
+    println "🖥️ [run-browser] 운영체제 감지: ${os}"
+
+    try {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            Desktop.getDesktop().browse(new URI(url))
+        } else {
+            if (os.contains("win")) {
+                ["cmd", "/c", "start", url].execute()
+            } else if (os.contains("mac")) {
+                ["open", url].execute()
+            } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+                ["xdg-open", url].execute()
+            } else {
+                println "❌ [run-browser] 브라우저를 열 수 없는 환경입니다."
+            }
+        }
+    } catch (Exception e) {
+        println "❌ [run-browser] 브라우저 실행 중 오류: ${e.message}"
+    }
+}
