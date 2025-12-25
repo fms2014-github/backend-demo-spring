@@ -1,6 +1,6 @@
 package com.portfolio.backend.controller;
 
-import com.portfolio.backend.annotation.HiddenView;
+import com.portfolio.backend.annotation.etc.HiddenView;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;

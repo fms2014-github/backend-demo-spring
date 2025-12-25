@@ -1,4 +1,4 @@
-package com.portfolio.backend.annotation;
+package com.portfolio.backend.annotation.etc;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
