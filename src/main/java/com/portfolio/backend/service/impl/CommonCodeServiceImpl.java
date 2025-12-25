@@ -20,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -64,6 +66,10 @@ public class CommonCodeServiceImpl implements CommonCodeService {
             entityManager.persist(entity);
         }
 
+        Instant instant = Instant.now();
+        LocalDate localDate = LocalDate.now();
+        LocalDateTime localDateTime = LocalDateTime.now();
+
         return 0;
     }
 
@@ -84,7 +90,7 @@ public class CommonCodeServiceImpl implements CommonCodeService {
     public List<CommonGroupCode> selectGroupCode(SelectGroupCodeDto.Req req) {
 
         log.debug(baseMapper.selectCommonCodeAll().toString());
-        return commonGroupCodeRepository.findAll(CommonGroupCodeSpecs.isGroupCode(req));
+        return commonGroupCodeRepository.findAll(CommonGroupCodeSpecs.isGroupCode(req.groupCode()));
     }
 
     @Override

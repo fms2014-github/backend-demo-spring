@@ -2,6 +2,7 @@ package com.portfolio.backend.handler;
 
 import com.portfolio.backend.exception.CommonException;
 import com.portfolio.backend.vo.common.CommonExceptionMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -13,13 +14,32 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+@Slf4j
 @RestControllerAdvice
 public class CommonExceptionAdvice extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({CommonException.class})
+    /**
+     * 모든 예외(Exception)를 처리하는 메서드
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+
+        if (log.isDebugEnabled()) {
+            log.error("🚨 [Detail Error] Internal Server Error: {}", e.getMessage(), e);
+        } else {
+            log.error("🚨 [Simple Error] Internal Server Error: {}", e.getMessage());
+        }
+
+        // 클라이언트에게 반환할 응답 (보안상 상세 내용은 숨기는 것이 좋음)
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("서버 내부 오류가 발생했습니다. 관리자에게 문의하세요.");
+    }
+
+    @ExceptionHandler(CommonException.class)
     public ResponseEntity<CommonExceptionMessage> CommonExceptionResponse(CommonException ex, WebRequest request) {
-        CommonExceptionMessage message = new CommonExceptionMessage(ex.getCode(), ex.getMessage(), ex.getLocalizedMessage());
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        CommonExceptionMessage message = new CommonExceptionMessage(ex.getErrorCode(), ex.getMessage(), ex.getLocalizedMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
     @Override

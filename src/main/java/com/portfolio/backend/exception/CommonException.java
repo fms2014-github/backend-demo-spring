@@ -7,40 +7,40 @@ import lombok.Setter;
 @Getter
 public class CommonException extends RuntimeException{
 
-    private int code;
+    private int errorCode;
 
     public CommonException() {
         super();
-        this.code = 1000;
+        this.errorCode = 1000;
     }
 
     public CommonException(String message) {
         super(message);
-        this.code = 1000;
+        this.errorCode = 1000;
     }
 
-    public CommonException(int code, String message) {
+    public CommonException(int errorCode, String message) {
         super(message);
-        this.code = code;
+        this.errorCode = errorCode;
     }
 
     public CommonException(String message, Throwable cause) {
         super(message, cause);
-        this.code = 1000;
+        this.errorCode = 1000;
     }
 
-    public CommonException(int code, String message, Throwable cause) {
+    public CommonException(int errorCode, String message, Throwable cause) {
         super(message, cause);
-        this.code = code;
+        this.errorCode = errorCode;
     }
 
     public CommonException(Throwable cause) {
         super(cause);
-        this.code = 1000;
+        this.errorCode = 1000;
     }
 
-    public CommonException(int code, Throwable cause) {
+    public CommonException(int errorCode, Throwable cause) {
         super(cause);
-        this.code = code;
+        this.errorCode = errorCode;
     }
 }
