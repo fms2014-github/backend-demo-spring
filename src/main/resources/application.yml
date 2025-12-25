@@ -1,4 +1,10 @@
+server:
+  port: 8080
+
 spring:
+  devtools:
+    restart:
+      additional-exclude: "**/META-INF/**"
   application:
     name: backend
 
@@ -55,6 +61,7 @@ management:
         include: "env,health" # env 엔드포인트를 웹으로 노출
 
 springdoc:
+  use-fqn: true
   api-docs:
     enabled: true
     path: "/spring-boot/study"
