@@ -1,16 +1,25 @@
 Configuration:
   Appenders:
     Console:
-      name: "CONSOLE"
-      PatternLayout:
-        disableAnsi: false # 색상 변경 때 필요
-        pattern: "%style{[%d{yyyy-MM-dd HH:mm:ss.SSS}]}{bold} %highlight{[%t]}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_cyan, DEBUG=bright_green, TRACE=magenta} %highlight{[%-5level]}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_cyan, DEBUG=bright_green, TRACE=magenta} %style{[%c{1.}]}{bright_magenta} - %highlight{%m}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_cyan, DEBUG=bright_green, TRACE=magenta}%n"
+      - name: "CONSOLE"
+        PatternLayout:
+          disableAnsi: false # 색상 변경 때 필요
+          pattern: "%style{[%d{yyyy-MM-dd HH:mm:ss.SSS}]}{bold} %highlight{[%t]}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_green, DEBUG=bright_cyan, TRACE=magenta} %highlight{[%-5level]}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_green, DEBUG=bright_cyan, TRACE=magenta} %style{[%c{1.}]}{bright_magenta} - %highlight{%m}{FATAL=white, ERROR=bright_red, WARN=bright_yellow, INFO=bright_green, DEBUG=bright_cyan, TRACE=magenta}%n"
+      - name: "RAW_CONSOLE"
+        target: SYSTEM_OUT
+        PatternLayout:
+          pattern: "%m%n"
   Loggers:
     Root:
       level: "INFO"
       AppenderRef:
        - ref: "CONSOLE"
     Logger:
+      - name: "RAW_LOGGER"
+        level: "INFO"
+        additivity: false
+        AppenderRef:
+          ref: "RAW_CONSOLE"
       - name: "com.portfolio"
         level: "DEBUG"
       - name: "org.apache.catalina.core"
@@ -22,10 +31,25 @@ Configuration:
       - name: "org.apache.catalina.startup"
         level: "OFF"
       - name: "com.zaxxer.hikari"
-        level: "DEBUG"
+        level: "OFF"
       - name: "org.apache.ibatis"
         level: "DEBUG"
       - name: "org.springframework.jdbc.core"
         level: "DEBUG"
       - name: "org.hibernate.orm.jdbc.bind"
+        level: "DEBUG"
+      - name: "org.springframework.security"
+        level: "DEBUG"
+      # [추가 1] 실행되는 SQL 쿼리 로그 (필수)
+      - name: "org.hibernate.SQL"
+        level: "DEBUG"
+      # [추가 2] SQL 파라미터 바인딩 로그 (상세 디버깅용)
+      # Hibernate 버전에 따라 org.hibernate.type.descriptor.sql 또는 org.hibernate.type 사용
+      - name: "org.hibernate.type"
+        level: "TRACE"
+      # [추가 3] JPA 데이터 처리 및 예외 변환 로그
+      - name: "org.springframework.orm.jpa"
+        level: "DEBUG"
+      # [추가 4] 트랜잭션 시작/커밋/롤백 로그 (에러 발생 시점 파악에 유용)
+      - name: "org.springframework.transaction"
         level: "DEBUG"
