@@ -1,7 +1,6 @@
 package com.portfolio.backend.config;
 
 import com.portfolio.backend.security.filter.JwtAuthenticationFilter;
-import com.portfolio.backend.service.HttpFormLoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,16 +8,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -32,6 +29,8 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private final UserDetailsService userDetailsService;
+
     @Bean
     @Order(1)
     public SecurityFilterChain jwtFilterChange(HttpSecurity http) throws Exception {
@@ -39,7 +38,7 @@ public class SecurityConfiguration {
             .cors(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((authorize) -> {
-                authorize.requestMatchers("/api/login", "/api/selectGroupCode").permitAll()
+                authorize.requestMatchers("/api/login", "/api/sign-up").permitAll()
                         .anyRequest().authenticated();
             })
             .sessionManagement((session) -> {
@@ -114,7 +113,7 @@ public class SecurityConfiguration {
                     authorize.requestMatchers(whitelistArray).permitAll()
                             .anyRequest().authenticated();
                 })
-                .userDetailsService(new HttpFormLoginService())
+                .userDetailsService(userDetailsService)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin((formLogin) -> {
                     formLogin.loginPage("/login-page").permitAll()
@@ -130,17 +129,12 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
-            .username("user")
-            .password(passwordEncoder().encode("password"))
-            .roles("USER")
-            .build();
-        return new InMemoryUserDetailsManager(user);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

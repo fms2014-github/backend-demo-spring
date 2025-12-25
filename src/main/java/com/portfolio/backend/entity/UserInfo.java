@@ -1,0 +1,94 @@
+package com.portfolio.backend.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "user_info", schema = "fms2014", uniqueConstraints = {@UniqueConstraint(name = "user_info_pk",
+        columnNames = {"account_id"})})
+public class UserInfo implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
+    private Long id;
+
+    @Size(max = 320)
+    @NotNull
+    @Column(name = "account_id", nullable = false, length = 320)
+    @Email(message = "올바른 이메일 형식이 아닙니다.")
+    private String accountId;
+
+    @Size(max = 256)
+    @NotNull
+    @Column(name = "password", nullable = false, length = 256)
+    private String password;
+
+    @Column(name = "last_login_time")
+    private Instant lastLoginTime;
+
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "login_fail_count", nullable = false)
+    private Integer loginFailCount;
+
+    @NotNull
+    @ColumnDefault("current_timestamp()")
+    @Column(name = "create_at", nullable = false)
+    private Instant createAt;
+
+    @NotNull
+    @ColumnDefault("current_timestamp()")
+    @Column(name = "update_at", nullable = false)
+    private Instant updateAt;
+
+    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserInfoDetail userInfoDetail;
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+        return accountId;
+    }
+
+    public void setUserInfoDetail(UserInfoDetail userInfoDetail) {
+        this.userInfoDetail = userInfoDetail;
+        userInfoDetail.setUserInfo(this);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (loginFailCount == null) {
+            loginFailCount = 0;
+        }
+
+        if (createAt == null) {
+            createAt = Instant.now();  // 기본값 설정
+        }
+
+        if (updateAt == null) {
+            updateAt = Instant.now();  // 기본값 설정
+        }
+
+        if (updateAt == null) {
+            updateAt = Instant.now();  // 기본값 설정
+        }
+    }
+}
