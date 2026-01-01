@@ -11,12 +11,6 @@ public class JWTLoginDto {
             String password
     ){}
 
-    public record Res(boolean isLogin, String accessToken){
-
-        public Res(boolean isLogin){
-            this(isLogin, null);
-        }
-
-    }
+    public record Res(String accessToken){}
 
 }

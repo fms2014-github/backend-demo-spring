@@ -1,5 +1,6 @@
 package com.portfolio.backend.entity;
 
+import com.portfolio.backend.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "user_info_detail", schema = "fms2014")
-public class UserInfoDetail {
+public class UserInfoDetail extends BaseEntity {
     @Id
     @Column(name = "user_id", nullable = false)
     private Long userId;

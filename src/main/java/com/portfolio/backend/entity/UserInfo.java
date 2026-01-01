@@ -1,5 +1,6 @@
 package com.portfolio.backend.entity;
 
+import com.portfolio.backend.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,7 +21,7 @@ import java.util.List;
 @Entity
 @Table(name = "user_info", schema = "fms2014", uniqueConstraints = {@UniqueConstraint(name = "user_info_pk",
         columnNames = {"account_id"})})
-public class UserInfo implements UserDetails {
+public class UserInfo extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
@@ -63,6 +65,7 @@ public class UserInfo implements UserDetails {
         return List.of();
     }
 
+    @NonNull
     @Override
     public String getUsername() {
         return accountId;
@@ -75,10 +78,6 @@ public class UserInfo implements UserDetails {
 
     @PrePersist
     public void prePersist() {
-        if (loginFailCount == null) {
-            loginFailCount = 0;
-        }
-
         if (createAt == null) {
             createAt = Instant.now();  // 기본값 설정
         }

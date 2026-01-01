@@ -7,14 +7,18 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
 @Embeddable
 @ToString
-public class CommonCodeId implements java.io.Serializable {
+public class CommonCodeId implements Serializable {
+    @Serial
     private static final long serialVersionUID = 4898540130926293840L;
+
     @Column(name = "code", nullable = false)
     private Integer code;
 

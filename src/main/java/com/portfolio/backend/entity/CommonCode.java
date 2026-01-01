@@ -1,7 +1,7 @@
 package com.portfolio.backend.entity;
 
+import com.portfolio.backend.entity.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,7 +18,7 @@ import java.time.Instant;
         @Index(name = "common_code_last_update_date_index", columnList = "last_update_date")
 })
 @ToString
-public class CommonCode {
+public class CommonCode extends BaseEntity {
     @EmbeddedId
     private CommonCodeId id;
 

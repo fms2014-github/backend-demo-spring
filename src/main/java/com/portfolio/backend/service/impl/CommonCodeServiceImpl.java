@@ -6,7 +6,7 @@ import com.portfolio.backend.dto.commonCode.SelectCodeDto;
 import com.portfolio.backend.dto.commonCode.SelectGroupCodeDto;
 import com.portfolio.backend.entity.CommonCode;
 import com.portfolio.backend.entity.CommonGroupCode;
-import com.portfolio.backend.exception.DuplicateKeyException;
+import com.portfolio.backend.exception.CommonException;
 import com.portfolio.backend.mapper.BaseMapper;
 import com.portfolio.backend.repository.CommonCodeRepository;
 import com.portfolio.backend.repository.CommonGroupCodeRepository;
@@ -46,7 +46,7 @@ public class CommonCodeServiceImpl implements CommonCodeService {
         CommonCode commonCode = req.toCommonCodeEntity();
 
         if(commonCodeRepository.existsById(commonCode.getId())) {
-            throw new DuplicateKeyException("키 중복");
+            throw new CommonException(123123, "키 중복");
         } else {
             entityManager.persist(commonCode);
         }
@@ -61,7 +61,7 @@ public class CommonCodeServiceImpl implements CommonCodeService {
         CommonGroupCode entity = req.toCommonGroupCodeEntity();
 
         if(commonGroupCodeRepository.existsById(entity.getGroupCode())) {
-            throw new DuplicateKeyException("키 중복");
+            throw new CommonException(123123, "키 중복");
         } else {
             entityManager.persist(entity);
         }

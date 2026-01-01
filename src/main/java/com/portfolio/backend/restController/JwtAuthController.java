@@ -12,9 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.password.CompromisedPasswordException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,14 +36,15 @@ public class JwtAuthController {
     @PostMapping("/login")
     public ResponseEntity<JWTLoginDto.Res> login(@RequestBody JWTLoginDto.Req req){
         String accessToken;
-        boolean isLogin;
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(req.email(), req.password());
             Authentication authentication = authenticationManager.authenticate(token);
 
             accessToken = jwtTokenProvider.createToken(authentication.getName(), "USER");
-            isLogin = true;
-        } catch (CompromisedPasswordException e) {
+        } catch (UsernameNotFoundException e) {
+            log.error("일치하는 이메일 없음");
+            throw new CommonException(1200, "등록된 이메일이 아닙니다.");
+        } catch (BadCredentialsException e) {
             log.error("비밀번호 오류");
             throw new CommonException(1200, "비밀번호가 맞지 않습니다.");
         } catch (Exception e) {
@@ -52,7 +54,7 @@ public class JwtAuthController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new JWTLoginDto.Res(isLogin, accessToken));
+                .body(new JWTLoginDto.Res(accessToken));
     }
 
     @PostMapping("/sign-up")

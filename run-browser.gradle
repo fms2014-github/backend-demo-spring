@@ -27,11 +27,9 @@ def getPort() {
         def isServerBlock = false
         def port = null
 
-        // 한 줄씩 읽으면서 'server'와 'port' 찾기
         for (String line : lines) {
             def cleanLine = line.trim()
 
-            // 주석(#) 무시
             if (cleanLine.startsWith("#")) continue
 
             // case 1: "server.port: 8080" 형태 (한 줄 작성)

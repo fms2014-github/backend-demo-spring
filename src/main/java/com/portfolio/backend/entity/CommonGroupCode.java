@@ -1,5 +1,6 @@
 package com.portfolio.backend.entity;
 
+import com.portfolio.backend.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ import java.time.Instant;
         @UniqueConstraint(name = "common_group_code_group_code_name_uindex", columnNames = {"group_code", "name"})
 })
 @ToString
-public class CommonGroupCode {
+public class CommonGroupCode extends BaseEntity {
     @Id
     @Column(name = "group_code", nullable = false)
     private Integer groupCode;

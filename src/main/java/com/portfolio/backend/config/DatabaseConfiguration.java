@@ -1,7 +1,9 @@
 package com.portfolio.backend.config;
 
 import com.portfolio.backend.util.SymmetricCryptoUtil;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,6 +96,11 @@ public class DatabaseConfiguration {
         transactionManager.setDefaultTimeout(30);
 
         return transactionManager;
+    }
+
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
+        return new JPAQueryFactory(entityManager);
     }
 
 }
