@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.Instant;
@@ -40,29 +41,18 @@ public class ErrorCode extends BaseEntity {
     private String detailMessage;
 
     @NotNull
-    @ColumnDefault("current_timestamp()")
+    @CreationTimestamp
     @Column(name = "create_at", nullable = false)
     private Instant createAt;
 
     @NotNull
-    @ColumnDefault("current_timestamp()")
+    @CreationTimestamp
     @Column(name = "update_at", nullable = false)
     private Instant updateAt;
 
     @NotNull
-    @ColumnDefault("0")
+    @ColumnDefault("'Y'")
     @Column(name = "use_yn", nullable = false)
-    private Boolean useYn;
-
-    @PrePersist
-    public void prePersist() {
-        if (createAt == null) {
-            createAt = Instant.now();  // 기본값 설정
-        }
-
-        if (updateAt == null) {
-            updateAt = Instant.now();  // 기본값 설정
-        }
-    }
+    private String useYn;
 
 }

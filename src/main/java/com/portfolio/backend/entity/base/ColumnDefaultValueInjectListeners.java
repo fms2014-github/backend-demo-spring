@@ -40,6 +40,7 @@ public class ColumnDefaultValueInjectListeners {
     }
 
     private Object convertSqlValueToEntityValue(String sqlValue, Class<?> fieldType) {
+        // Converts SQL default value to entity value
         if (fieldType == String.class) {
             return sqlValue.replace("'", "");
         } else if (fieldType == Integer.class || fieldType == int.class) {

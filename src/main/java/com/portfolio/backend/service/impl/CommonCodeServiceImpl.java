@@ -12,25 +12,18 @@ import com.portfolio.backend.repository.CommonCodeRepository;
 import com.portfolio.backend.repository.CommonGroupCodeRepository;
 import com.portfolio.backend.repository.spec.CommonGroupCodeSpecs;
 import com.portfolio.backend.service.CommonCodeService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommonCodeServiceImpl implements CommonCodeService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     private final BaseMapper baseMapper;
 
@@ -41,15 +34,15 @@ public class CommonCodeServiceImpl implements CommonCodeService {
     @Override
     @Transactional
     public int insertCode(InsertCodeDto.Req req) {
-        log.info("start insertCode");
+        log.debug("start insertCode");
 
         CommonCode commonCode = req.toCommonCodeEntity();
 
         if(commonCodeRepository.existsById(commonCode.getId())) {
-            throw new CommonException(123123, "키 중복");
-        } else {
-            entityManager.persist(commonCode);
+            throw new CommonException(0, "키 중복");
         }
+
+        commonCodeRepository.save(commonCode);
 
         return 0;
     }
@@ -57,18 +50,13 @@ public class CommonCodeServiceImpl implements CommonCodeService {
     @Override
     @Transactional
     public int insertGroupCode(InsertGroupCodeDto.Req req) {
-        log.info("start insertGroupCode");
+        log.debug("start insertGroupCode");
         CommonGroupCode entity = req.toCommonGroupCodeEntity();
 
         if(commonGroupCodeRepository.existsById(entity.getGroupCode())) {
-            throw new CommonException(123123, "키 중복");
-        } else {
-            entityManager.persist(entity);
+            throw new CommonException(0, "키 중복");
         }
-
-        Instant instant = Instant.now();
-        LocalDate localDate = LocalDate.now();
-        LocalDateTime localDateTime = LocalDateTime.now();
+        commonGroupCodeRepository.save(entity);
 
         return 0;
     }
@@ -77,7 +65,7 @@ public class CommonCodeServiceImpl implements CommonCodeService {
     @Transactional
     public int updateGroupCode(CommonGroupCode commonGroupCode) {
         CommonGroupCode selectGroupCode = commonGroupCodeRepository.findById(10000).orElse(null);
-        log.info("##### selectGroupCode: {}", selectGroupCode);
+        log.debug("##### selectGroupCode: {}", selectGroupCode);
         if(selectGroupCode != null) {
             selectGroupCode.setName(commonGroupCode.getName());
             selectGroupCode.setLastUpdateDate(Instant.now());

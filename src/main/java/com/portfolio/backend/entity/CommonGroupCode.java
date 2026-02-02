@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -28,23 +28,11 @@ public class CommonGroupCode extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ColumnDefault("current_timestamp()")
+    @CreationTimestamp
     @Column(name = "create_date", nullable = false)
     private Instant createDate;
 
-    @ColumnDefault("current_timestamp()")
+    @CreationTimestamp
     @Column(name = "last_update_date", nullable = false)
     private Instant lastUpdateDate;
-
-    @PrePersist
-    public void prePersist() {
-        if (createDate == null) {
-            createDate = Instant.now();  // 기본값 설정
-        }
-
-        if (lastUpdateDate == null) {
-            lastUpdateDate = Instant.now();  // 기본값 설정
-        }
-    }
-
 }

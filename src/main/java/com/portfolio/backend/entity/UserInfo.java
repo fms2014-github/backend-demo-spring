@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,19 +48,20 @@ public class UserInfo extends BaseEntity implements UserDetails {
     private Integer loginFailCount;
 
     @NotNull
-    @ColumnDefault("current_timestamp()")
+    @CreationTimestamp
     @Column(name = "create_at", nullable = false)
     private Instant createAt;
 
     @NotNull
-    @ColumnDefault("current_timestamp()")
+    @CreationTimestamp
     @Column(name = "update_at", nullable = false)
     private Instant updateAt;
 
-    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
     private UserInfoDetail userInfoDetail;
 
 
+    @NonNull
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -74,20 +76,5 @@ public class UserInfo extends BaseEntity implements UserDetails {
     public void setUserInfoDetail(UserInfoDetail userInfoDetail) {
         this.userInfoDetail = userInfoDetail;
         userInfoDetail.setUserInfo(this);
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (createAt == null) {
-            createAt = Instant.now();  // 기본값 설정
-        }
-
-        if (updateAt == null) {
-            updateAt = Instant.now();  // 기본값 설정
-        }
-
-        if (updateAt == null) {
-            updateAt = Instant.now();  // 기본값 설정
-        }
     }
 }

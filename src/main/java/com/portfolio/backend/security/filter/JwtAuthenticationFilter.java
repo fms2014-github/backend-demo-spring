@@ -3,6 +3,7 @@ package com.portfolio.backend.security.filter;
 import com.portfolio.backend.security.provider.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
@@ -57,9 +59,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 헤더에서 "Bearer " 부분을 제외하고 토큰만 가져옴
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
+        } else {
+            bearerToken = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("Authentication"))
+            .findFirst().map(Cookie::getValue).orElse(null);
+
+            return bearerToken;
         }
-        return null;
     }
 }

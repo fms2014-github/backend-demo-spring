@@ -7,6 +7,9 @@ import com.portfolio.backend.entity.UserInfoDetail;
 import com.portfolio.backend.exception.CommonException;
 import com.portfolio.backend.repository.UserInfoRepository;
 import com.portfolio.backend.security.provider.JwtTokenProvider;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,22 +37,30 @@ public class JwtAuthController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public ResponseEntity<JWTLoginDto.Res> login(@RequestBody JWTLoginDto.Req req){
+    public ResponseEntity<JWTLoginDto.Res> login(@RequestBody JWTLoginDto.Req req, HttpServletRequest request, HttpServletResponse response){
         String accessToken;
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(req.email(), req.password());
             Authentication authentication = authenticationManager.authenticate(token);
 
             accessToken = jwtTokenProvider.createToken(authentication.getName(), "USER");
+
+            Cookie authCookie = new Cookie("Authentication", accessToken);
+            authCookie.setHttpOnly(true);
+            authCookie.setSecure(false);
+            authCookie.setPath("/");
+            authCookie.setMaxAge(60 * 60 * 24); // 1일 유효
+            response.addCookie(authCookie);
         } catch (UsernameNotFoundException e) {
             log.error("일치하는 이메일 없음");
-            throw new CommonException(1200, "등록된 이메일이 아닙니다.");
+            throw new CommonException(0, "등록된 이메일이 아닙니다.");
         } catch (BadCredentialsException e) {
             log.error("비밀번호 오류");
-            throw new CommonException(1200, "비밀번호가 맞지 않습니다.");
+            throw new CommonException(0, "비밀번호가 맞지 않습니다.");
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Authentication failed: {}", e.getMessage());
-            throw new CommonException("인증 처리 중 오류");
+            throw new CommonException(0, "인증 처리 중 오류");
         }
 
         return ResponseEntity

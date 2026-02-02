@@ -24,7 +24,7 @@ public class CommonCodeController {
 
     @GetMapping("/selectGroupCode")
     public ResponseEntity<List<CommonGroupCode>> selectGroupCode(@ModelAttribute SelectGroupCodeDto.Req req) throws Exception {
-        log.info("#### Select group code");
+        log.debug("#### Select group code");
         List<CommonGroupCode> groupCodeList = commonCodeService.selectGroupCode(req);
 
         return new ResponseEntity<>(groupCodeList, HttpStatus.OK);
@@ -32,7 +32,7 @@ public class CommonCodeController {
 
     @GetMapping("/selectCode")
     public ResponseEntity<List<SelectCodeDto.Res>> selectCode(@ModelAttribute SelectCodeDto.Req req) throws Exception {
-        log.info("#### Select code");
+        log.debug("#### Select code");
         List<SelectCodeDto.Res> codeList = commonCodeService.selectCode();
 
         return new ResponseEntity<>(codeList, HttpStatus.OK);
@@ -40,8 +40,8 @@ public class CommonCodeController {
 
     @PostMapping("/insertCode")
     public ResponseEntity<InsertCodeDto.Res> insertCode(@RequestBody InsertCodeDto.Req req) throws Exception {
-        log.info("##### start insertCode");
-        log.info("##### commonCode: {}", req);
+        log.debug("##### start insertCode");
+        log.debug("##### commonCode: {}", req);
         InsertCodeDto.Res res;
         int result = commonCodeService.insertCode(req);
         res = new InsertCodeDto.Res(result);
@@ -50,8 +50,8 @@ public class CommonCodeController {
 
     @PostMapping("/insertGroupCode")
     public ResponseEntity<InsertGroupCodeDto.Res> insertGroupCode(@RequestBody InsertGroupCodeDto.Req req) throws Exception {
-        log.info("##### start insertGroupCode");
-        log.info("##### commonGroupCode: {}", req);
+        log.debug("##### start insertGroupCode");
+        log.debug("##### commonGroupCode: {}", req);
         int result = commonCodeService.insertGroupCode(req);
         InsertGroupCodeDto.Res res = new InsertGroupCodeDto.Res(result);
 
@@ -60,8 +60,8 @@ public class CommonCodeController {
 
     @PutMapping("/updateGroupCode")
     public ResponseEntity<?> updateGroupCode(@RequestBody CommonGroupCode commonGroupCode) throws Exception {
-        log.info("##### start updateGroupCode");
-        log.info("##### commonGroupCode: {}", commonGroupCode);
+        log.debug("##### start updateGroupCode");
+        log.debug("##### commonGroupCode: {}", commonGroupCode);
         int result = commonCodeService.updateGroupCode(commonGroupCode);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
