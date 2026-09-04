@@ -44,6 +44,23 @@ spring:
       charset: "UTF-8"
       enabled: true
       force: true
+  kafka:
+    # 우리가 WSL2에 띄운 카프카 브로커의 주소입니다.
+    bootstrap-servers: localhost:9092
+
+    # Consumer(리스너)를 위한 기본 설정입니다.
+    consumer:
+      # 컨슈머 그룹 ID 설정 (필수값)
+      group-id: my-first-consumer-group
+      # 제일 처음부터 메시지를 읽을지, 최신 메시지만 읽을지 결정합니다.
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    # Producer(발행자)를 위한 기본 설정입니다.
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 logging:
   config: "classpath:configuration/log4j/log4j2.yaml"

@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
 // ----------------------------------------------------------------
-    // 1. Spring Boot Core & Web (웹 애플리케이션 기본 설정)
+    // Spring Boot Core & Web (웹 애플리케이션 기본 설정)
     // ----------------------------------------------------------------
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator' // 애플리케이션 모니터링
@@ -39,17 +39,17 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor' // 설정 메타데이터 생성
 
     // ----------------------------------------------------------------
-    // 2. Security & Auth (보안 및 인증)
+    // Security & Auth (보안 및 인증)
     // ----------------------------------------------------------------
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // JWT (JSON Web Token)
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
     // ----------------------------------------------------------------
-    // 3. Database & ORM (데이터베이스 및 데이터 접근)
+    // Database & ORM (데이터베이스 및 데이터 접근)
     // ----------------------------------------------------------------
     // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -68,7 +68,7 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
     // ----------------------------------------------------------------
-    // 4. View Template & JSP (화면 처리)
+    // View Template & JSP (화면 처리)
     // ----------------------------------------------------------------
     // Thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -81,7 +81,7 @@ dependencies {
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
 
     // ----------------------------------------------------------------
-    // 5. Logging (로깅 설정 - Log4j2)
+    // Logging (로깅 설정 - Log4j2)
     // ----------------------------------------------------------------
     // Spring Boot 기본 Logback 대신 Log4j2를 사용하는 설정으로 보입니다.
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
@@ -91,19 +91,24 @@ dependencies {
     runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0' // Log4j2 YAML 설정을 위해 필요
 
     // ----------------------------------------------------------------
-    // 6. Documentation (API 문서화)
+    // Documentation (API 문서화)
     // ----------------------------------------------------------------
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0' // Swagger UI
 
     // ----------------------------------------------------------------
-    // 7. Utilities & DevTools (개발 편의 도구)
+    // 카프카
+    // ----------------------------------------------------------------
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // ----------------------------------------------------------------
+    // Utilities & DevTools (개발 편의 도구)
     // ----------------------------------------------------------------
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools' // 핫스왑 등 개발 편의
 
     // ----------------------------------------------------------------
-    // 8. Testing (테스트)
+    // Testing (테스트)
     // ----------------------------------------------------------------
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.0'
